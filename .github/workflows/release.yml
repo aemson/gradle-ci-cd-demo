@@ -7,7 +7,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Application Version
-        id: version
+        id: versioning
         uses: paulhatch/semantic-version@v4.0.2
         with:
           branch: main
