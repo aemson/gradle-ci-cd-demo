@@ -16,7 +16,7 @@ class GreetingResource {
 
     @GET
     @Produces(TEXT_PLAIN)
-    fun hello(@QueryParam(value = "name") name: String) = "Hello from gReactive $name"
+    fun hello(@QueryParam(value = "name") name: String) = "Hello from Reactive $name"
 
     @GET
     @Produces(APPLICATION_JSON)
