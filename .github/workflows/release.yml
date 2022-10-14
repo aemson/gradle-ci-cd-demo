@@ -8,7 +8,8 @@ jobs:
     steps:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-        run: clean build
+      - name: Execute Gradle build
+        run: ./gradlew build
 
       - uses: actions/checkout@v2
       - name: Build project # This would actually build your project, using zip for an example artifact
