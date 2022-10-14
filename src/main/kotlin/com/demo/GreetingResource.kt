@@ -20,8 +20,6 @@ class GreetingResource {
 
     @GET
     @Produces(APPLICATION_JSON)
-    fun getData(@QueryParam(value = "name") name: String): Response {
-        val user = users.first { it.name == name }
-        return Response.ok().entity(user).build()
-    }
+    fun getData(@QueryParam(value = "name") name: String): Response =
+        Response.ok().entity(users.first { it.name == name }).build()
 }
