@@ -13,5 +13,3 @@ jobs:
           git fetch --tags --unshallow
           # Run release:
           ./gradlew release
-          # Run publish:
-          ./gradlew publish
