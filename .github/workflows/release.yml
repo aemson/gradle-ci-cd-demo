@@ -13,3 +13,10 @@ jobs:
           git fetch --tags --unshallow
           # Run release:
           ./gradlew release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          release_name: ${{ github.run_number }}
