@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.allopen") version "1.7.20"
     id("io.quarkus")
+    id("pl.allegro.tech.build.axion-release") version "1.14.0"
 }
 
 repositories {
@@ -14,7 +15,7 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
-    implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
+    implementation(enforcedPlatform("$quarkusPlatformGroupId:$quarkusPlatformArtifactId:$quarkusPlatformVersion"))
     implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
     implementation("io.quarkus:quarkus-resteasy-reactive")
     implementation("io.quarkus:quarkus-kotlin")
@@ -25,7 +26,7 @@ dependencies {
 }
 
 group = "com.demo"
-version = "1.0.0-SNAPSHOT"
+version = scmVersion.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
