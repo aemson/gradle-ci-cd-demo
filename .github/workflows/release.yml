@@ -13,6 +13,7 @@ jobs:
 
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
+      - uses: jakejarvis/s3-sync-action@master
         with:
           distribution: 'zulu'
           java-version: 11
@@ -32,10 +33,10 @@ jobs:
 
       - name: Publish using Axion
         run: |
-            # Fetch a full copy of the repo, as required by release plugin:
-            git fetch --tags --unshallow
-            # Run release:
-            ./gradlew release
+          # Fetch a full copy of the repo, as required by release plugin:
+          git fetch --tags --unshallow
+          # Run release:
+          ./gradlew release
 
       - name: Build project # This would actually build your project, using zip for an example artifact
         run: |
@@ -52,11 +53,12 @@ jobs:
           asset_name: ./gradle-ci-cd-demo.zip
           asset_content_type: application/zip
 
-      - name: Set AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Upload to s3 bucket
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-      - name: Deploy to S3
-        run: yarn run deploy
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'   # optional: defaults to us-east-1
+          SOURCE_DIR: 'builds'      # optional: defaults to entire repository
