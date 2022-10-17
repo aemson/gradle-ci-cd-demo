@@ -13,7 +13,6 @@ jobs:
 
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
-      - uses: jakejarvis/s3-sync-action@master
         with:
           distribution: 'zulu'
           java-version: 11
@@ -52,8 +51,12 @@ jobs:
           asset_path: ./gradle-ci-cd-demo.zip
           asset_name: ./gradle-ci-cd-demo.zip
           asset_content_type: application/zip
-
-      - name: Upload to s3 bucket
+   # optional: defaults to entire repository
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
@@ -61,4 +64,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-west-1'   # optional: defaults to us-east-1
-          SOURCE_DIR: 'builds'      # optional: defaults to entire repository
+          SOURCE_DIR: 'public'      # optional: defaults to entire repository
