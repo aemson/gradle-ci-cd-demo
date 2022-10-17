@@ -31,6 +31,6 @@ jobs: # Define the build and deploy jobs
         from: bucket
         to: 's3://ci-cd-demo'
         arguments: | # Optional arguments
-        --acl public-read \
-        --cache-control "max-age=86400"
+          --acl public-read \
+          --cache-control "max-age=86400"
         overwrite: true # default is false
