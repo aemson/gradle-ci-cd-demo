@@ -11,6 +11,7 @@ jobs:
       - run: echo ${{ steps.get_version.outputs.version }}
       - run: echo ${{ steps.get_version.outputs.version-without-v }}
 
+      - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -36,7 +37,6 @@ jobs:
             # Run release:
             ./gradlew release
 
-      - uses: actions/checkout@v3
       - name: Build project # This would actually build your project, using zip for an example artifact
         run: |
           zip --junk-paths gradle-ci-cd-demo README.md
@@ -51,3 +51,12 @@ jobs:
           asset_path: ./gradle-ci-cd-demo.zip
           asset_name: ./gradle-ci-cd-demo.zip
           asset_content_type: application/zip
+
+      - name: Set AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Deploy to S3
+        run: yarn run deploy
