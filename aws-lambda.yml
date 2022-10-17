@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Environment:
+    Type: String
+  ServiceName:
+    Type: String
+  LambdaExecutionRoleArn:
+    Type: String
+
+Resources:
+  CiCdDemoApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: not.used.in.provided.runtime
+      Runtime: provided
+      FunctionName: !Ref ServiceName
+      CodeUri: ../build/function.zip
+      MemorySize: 1024
+      Timeout: 60
+      Role: !Ref LambdaExecutionRoleArn
+
+Outputs:
+  CiCdDemoApiArn:
+    Value: !GetAtt CiCdDemoApi.Arn
