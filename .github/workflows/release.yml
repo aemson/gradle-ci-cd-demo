@@ -23,26 +23,19 @@ jobs:
     name: Create Release
     runs-on: 'ubuntu-latest'
     steps:
+      - name: Create Semantic release
+        id: semantic
+        uses: go-semantic-release/action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/create-release@v1
         name: Create release
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v0.${{ github.run_number }}.0
-          release_name: v0.${{ github.run_number }}.0
+          tag_name: v${{ steps.semantic.outputs.version }}
+          release_name: v${{ steps.semantic.outputs.version }}
 
-      - name: Semantic release 2
-        id: semanticNew
-        uses: go-semantic-release/action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          echo ${{ steps.semanticNew.outputs.version }}
 
-      - name: Publish using Axion
-        run: |
-          # Fetch a full copy of the repo, as required by release plugin:
-          git fetch --tags --unshallow
-          # Run release:
-          ./gradlew release
