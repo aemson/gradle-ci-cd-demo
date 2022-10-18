@@ -24,7 +24,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Create semantic release
-        id: semanticRelease
+        id: release-please
         uses: google-github-actions/release-please-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -33,12 +33,15 @@ jobs:
           command: github-release
           default-branch: main
       - run: |
-          echo release_created = ${{ steps.semanticRelease.outputs.release_created }}
-          echo upload_url = ${{ steps.semanticRelease.outputs.upload_url }}
-          echo tag_name = ${{ steps.semanticRelease.outputs.tag_name }}
-          echo major = ${{ steps.semanticRelease.outputs.major }}
-          echo minor = ${{ steps.semanticRelease.outputs.minor }}
-          echo patch = ${{ steps.semanticRelease.outputs.patch }}
+          echo release_created = ${{ steps }}
+          echo release_created = ${{ steps.release-please }}
+          echo release_created = ${{ steps.release-please.outputs }}
+          echo release_created = ${{ steps.release-please.outputs.release_created }}
+          echo upload_url = ${{ steps.release-please.outputs.upload_url }}
+          echo tag_name = ${{ steps.release-please.outputs.tag_name }}
+          echo major = ${{ steps.release-please.outputs.major }}
+          echo minor = ${{ steps.release-please.outputs.minor }}
+          echo patch = ${{ steps.release-please.outputs.patch }}
 
 #      - name: Create Semantic release
 #        id: semver
