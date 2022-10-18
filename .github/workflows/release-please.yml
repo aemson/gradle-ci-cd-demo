@@ -4,23 +4,22 @@ on:
       - main
 name: release-please
 jobs:
-  release-please:
+  release-please-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: GoogleCloudPlatform/release-please-action@main
         id: release
         with:
-          release-type: java
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
           package-name: ${{env.ACTION_NAME}}
           command: github-release
-          bump-minor-pre-major: true
-          bump-patch-for-minor-pre-major: true
       - uses: actions/checkout@v2
-      - name: tag major and minor versions
-        if: ${{ steps.release.outputs.release_created }}
+      - name: tag major and patch versions
         run: |
           git config user.name github-actions[bot]
-          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN }}@github.com/google-github-actions/release-please-action.git"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN}}@github.com/google-github-actions/release-please-action.git"
           git tag -d v${{ steps.release.outputs.major }} || true
           git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
           git push origin :v${{ steps.release.outputs.major }} || true
@@ -29,3 +28,4 @@ jobs:
           git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
           git push origin v${{ steps.release.outputs.major }}
           git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
+        if: ${{ steps.release.outputs.release_created }}
