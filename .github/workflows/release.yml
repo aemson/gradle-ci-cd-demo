@@ -15,10 +15,11 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: build -Dquarkus.package.type=native
+          arguments: build #-Dquarkus.package.type=native
           gradle-home-cache-cleanup: true
 
   release:
+    needs: build
     name: Create Release
     runs-on: 'ubuntu-latest'
     steps:
@@ -30,20 +31,6 @@ jobs:
         with:
           tag_name: v0.${{ github.run_number }}.0
           release_name: v0.${{ github.run_number }}.0
-
-
-      - name: Semantic Release demo
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v3
-        with:
-          dry_run: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          echo ${{ steps.semantic.outputs.new_release_version }}
-          echo ${{ steps.semantic.outputs.new_release_major_version }}
-          echo ${{ steps.semantic.outputs.new_release_minor_version }}
-          echo ${{ steps.semantic.outputs.new_release_patch_version }}
 
       - name: Semantic release 2
         id: semanticNew
