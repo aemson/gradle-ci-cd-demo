@@ -1,86 +1,86 @@
-name: Release version
-on:
-  push:
-    branches: [ 'main' ]
-jobs:
-#  build:
-#    name: Clean build and package the code
+#name: Release version
+#on:
+#  push:
+#    branches: [ 'main' ]
+#jobs:
+##  build:
+##    name: Clean build and package the code
+##    runs-on: 'ubuntu-latest'
+##    steps:
+##      - uses: actions/checkout@v3
+##      - uses: actions/setup-java@v3
+##        with:
+##          distribution: 'zulu'
+##          java-version: 11
+##      - uses: gradle/gradle-build-action@v2
+##        with:
+##          gradle-version: 7.5.1
+##          arguments: build #-Dquarkus.package.type=native
+##          gradle-home-cache-cleanup: true
+#
+#  release:
+#    #needs: build
+#    name: Create Release
 #    runs-on: 'ubuntu-latest'
 #    steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-java@v3
+#      - name: Create semantic release
+#        id: release
+#        uses: google-github-actions/release-please-action@main
 #        with:
-#          distribution: 'zulu'
-#          java-version: 11
-#      - uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: 7.5.1
-#          arguments: build #-Dquarkus.package.type=native
-#          gradle-home-cache-cleanup: true
-
-  release:
-    #needs: build
-    name: Create Release
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Create semantic release
-        id: release
-        uses: google-github-actions/release-please-action@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: java
-          package-name: release-please-action
-          command: github-release
-      - uses: actions/checkout@v2
-      - name: tag major and patch versions
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN}}@github.com/google-github-actions/release-please-action.git"
-          git tag -d v${{ steps.release.outputs.major }} || true
-          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
-          git push origin :v${{ steps.release.outputs.major }} || true
-          git push origin :v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
-          git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
-          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
-          git push origin v${{ steps.release.outputs.major }}
-          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
-        if: ${{ steps.release.outputs.release_created }}
-      - run: |
-          echo release_created = ${{ steps }}
-          echo release_created = ${{ steps.release }}
-          echo release_created = ${{ steps.release.outputs }}
-          echo release_created = ${{ steps.release.outputs.release_created }}
-          echo upload_url = ${{ steps.release.outputs.upload_url }}
-          echo tag_name = ${{ steps.release.outputs.tag_name }}
-          echo major = ${{ steps.release.outputs.major }}
-          echo minor = ${{ steps.release.outputs.minor }}
-          echo patch = ${{ steps.release.outputs.patch }}
-
-#      - name: Create Semantic release
-#        id: semver
-#        uses: go-semantic-release/action@v1
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          release-type: java
+#          package-name: release-please-action
+#          command: github-release
+#      - uses: actions/checkout@v2
+#      - name: tag major and patch versions
+#        run: |
+#          git config user.name github-actions[bot]
+#          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+#          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN}}@github.com/google-github-actions/release-please-action.git"
+#          git tag -d v${{ steps.release.outputs.major }} || true
+#          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+#          git push origin :v${{ steps.release.outputs.major }} || true
+#          git push origin :v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+#          git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
+#          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
+#          git push origin v${{ steps.release.outputs.major }}
+#          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
+#        if: ${{ steps.release.outputs.release_created }}
 #      - run: |
-#          echo version = v${{ steps.semver.outputs.version }}
+#          echo release_created = ${{ steps }}
+#          echo release_created = ${{ steps.release }}
+#          echo release_created = ${{ steps.release.outputs }}
+#          echo release_created = ${{ steps.release.outputs.release_created }}
+#          echo upload_url = ${{ steps.release.outputs.upload_url }}
+#          echo tag_name = ${{ steps.release.outputs.tag_name }}
+#          echo major = ${{ steps.release.outputs.major }}
+#          echo minor = ${{ steps.release.outputs.minor }}
+#          echo patch = ${{ steps.release.outputs.patch }}
 #
-#      - uses: actions/create-release@v1
-#        name: Create release
-#        id: create_release
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: v${{ steps.semver.outputs.version }}
-#          release_name: v${{ steps.semver.outputs.version }}
-#
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-#          asset_path: ./${{ github.repository }}.zip
-#          asset_name: ./${{ github.repository }}.zip
-#          asset_content_type: application/zip
+##      - name: Create Semantic release
+##        id: semver
+##        uses: go-semantic-release/action@v1
+##        with:
+##          github-token: ${{ secrets.GITHUB_TOKEN }}
+##      - run: |
+##          echo version = v${{ steps.semver.outputs.version }}
+##
+##      - uses: actions/create-release@v1
+##        name: Create release
+##        id: create_release
+##        env:
+##          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+##        with:
+##          tag_name: v${{ steps.semver.outputs.version }}
+##          release_name: v${{ steps.semver.outputs.version }}
+##
+##      - name: Upload Release Asset
+##        id: upload-release-asset
+##        uses: actions/upload-release-asset@v1
+##        env:
+##          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+##        with:
+##          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+##          asset_path: ./${{ github.repository }}.zip
+##          asset_name: ./${{ github.repository }}.zip
+##          asset_content_type: application/zip
