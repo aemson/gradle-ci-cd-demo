@@ -3,7 +3,7 @@ on:
   push:
     branches: [ 'main' ]
 jobs:
-  gradle:
+  gradle-build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
@@ -21,10 +21,6 @@ jobs:
           name: build-reports
           path: build/function.zip
 
-  release:
-    needs: [ gradle ]
-    runs-on: 'ubuntu-latest'
-    steps:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -54,7 +50,7 @@ jobs:
           asset_content_type: application/zip
 
   deploy:
-    needs: [ gradle, release ]
+    needs: [ gradle-build-release ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
