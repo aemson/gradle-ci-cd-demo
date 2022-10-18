@@ -3,7 +3,7 @@ on:
   push:
     branches: [ 'main' ]
 jobs:
-  gradle-build-release:
+  gradle:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
@@ -21,11 +21,15 @@ jobs:
           name: build-reports
           path: build/function.zip
 
+  release:
+    needs: [ gradle ]
+    runs-on: 'ubuntu-latest'
+    steps:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ github.run_number }}.0.0
           release_name: v${{ github.run_number }}.0.0
@@ -44,13 +48,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.gradle-build-release.outputs.build-scan-url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./gradle-ci-cd-demo.zip
           asset_name: ./gradle-ci-cd-demo-v${{ github.run_number }}.0.0.zip
           asset_content_type: application/zip
 
   deploy:
-    needs: [ gradle-build-release ]
+    needs: [ gradle, release ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -61,4 +65,4 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'eu-west-1'   # optional: defaults to us-east-1
+          AWS_REGION: 'eu-west-1'
