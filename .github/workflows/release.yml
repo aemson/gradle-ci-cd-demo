@@ -24,10 +24,13 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Create Semantic release
-        id: semantic
-        uses: go-semantic-release/action@v1
-        with:
+        id: semver
+      -  uses: actions/checkout@master
+      -  uses: go-semantic-release/action@v1
+         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo version = v${{ steps.semver.outputs.version }}
 
       - uses: actions/create-release@v1
         name: Create release
@@ -35,8 +38,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.semantic.outputs.version }}
-          release_name: v${{ steps.semantic.outputs.version }}
+          tag_name: v${{ steps.semver.outputs.version }}
+          release_name: v${{ steps.semver.outputs.version }}
 
       - name: Upload Release Asset
         id: upload-release-asset
