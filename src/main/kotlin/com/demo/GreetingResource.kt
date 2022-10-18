@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response
 @Path("/hello")
 class GreetingResource {
 
-    val users = listOf(Users("Aemson", "Oslo", 31), Users("Jonathan", "Oslo", 2))
+    val users = listOf(Users("Aemson User", "Oslo", 31), Users("Jonathan", "Oslo", 2))
 
     @GET
     @Produces(TEXT_PLAIN)
