@@ -16,11 +16,15 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Execute Gradle build
-        run: ./gradlew build
 
+      - name: Setup Gradle and build package
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.5.1
+          arguments: build -Dquarkus.package.type=native
+          gradle-home-cache-cleanup: true
+
+  release:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -37,10 +41,6 @@ jobs:
           # Run release:
           ./gradlew release
 
-      - name: Build project # This would actually build your project, using zip for an example artifact
-        run: |
-          zip --junk-paths gradle-ci-cd-demo README.md
-
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -51,8 +51,9 @@ jobs:
           asset_path: ./gradle-ci-cd-demo.zip
           asset_name: ./gradle-ci-cd-demo.zip
           asset_content_type: application/zip
-   # optional: defaults to entire repository
+          
   deploy:
+    needs: [ build, release ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

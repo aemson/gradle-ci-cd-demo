@@ -14,7 +14,7 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-      - name: Setup Gradle abd clean build commit
+      - name: Setup Gradle and clean build
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
