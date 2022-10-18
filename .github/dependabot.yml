@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle" 
+    directory: "/" 
+    schedule:
+      interval: "daily"
+      time: "18:40"
+    target-branch: "chore: Dependabot updates"
+      # Labels on pull requests for version updates only
+    labels:
+        - "bump gradle dependencies"
+    open-pull-requests-limit: 10
