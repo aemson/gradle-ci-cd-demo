@@ -11,7 +11,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: gradle
+          release-type: java
           package-name: ${{env.ACTION_NAME}}
           command: github-release
       - uses: actions/checkout@v2
