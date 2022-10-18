@@ -27,8 +27,8 @@ jobs:
         id: semanticRelease
         uses: google-github-actions/release-please-action@v3
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: java
-          package-name: release-please-action
           default-branch: main
       - run: |
           echo release_created = ${{ steps.semanticRelease.outputs.release_created }}
