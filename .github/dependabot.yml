@@ -4,9 +4,9 @@ updates:
     directory: "/" 
     schedule:
       interval: "daily"
-      time: "18:40"
+      time: "18:55"
+      timezone: "CET"
     target-branch: "chore: Dependabot updates"
-      # Labels on pull requests for version updates only
     labels:
         - "bump gradle dependencies"
     open-pull-requests-limit: 10
