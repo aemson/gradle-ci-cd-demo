@@ -16,4 +16,12 @@ class GreetingResourceTest {
             .statusCode(200)
             .body(`is`("Hello from Reactive Aemson"))
     }
+
+    @Test
+    fun shouldReturnAllUsers() {
+        given()
+            .`when`().get("/hello/all")
+            .then()
+            .statusCode(200)
+    }
 }
