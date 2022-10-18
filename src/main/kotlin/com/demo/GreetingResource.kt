@@ -22,4 +22,10 @@ class GreetingResource {
     @Produces(APPLICATION_JSON)
     fun getData(@QueryParam(value = "name") name: String): Response =
         Response.ok().entity(users.first { it.name == name }).build()
+
+    @GET
+    @Produces(APPLICATION_JSON)
+    @Path("/all")
+    fun getAllData(): Response =
+        Response.ok().entity(users).build()
 }
