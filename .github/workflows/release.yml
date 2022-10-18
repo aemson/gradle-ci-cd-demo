@@ -28,14 +28,15 @@ jobs:
         uses: google-github-actions/release-please-action@v3
         with:
           release-type: java
+          package-name: release-please-action
           default-branch: main
       - run: |
-            echo release_created = v${{ steps.semanticRelease.outputs.release_created }}          
-            echo upload_url = v${{ steps.semanticRelease.outputs.upload_url }}          
-            echo tag_name = v${{ steps.semanticRelease.outputs.tag_name }}          
-            echo major = v${{ steps.semanticRelease.outputs.major }}          
-            echo minor = v${{ steps.semanticRelease.outputs.minor }}          
-            echo patch = v${{ steps.semanticRelease.outputs.patch }}          
+          echo release_created = ${{ steps.semanticRelease.outputs.release_created }}
+          echo upload_url = ${{ steps.semanticRelease.outputs.upload_url }}
+          echo tag_name = ${{ steps.semanticRelease.outputs.tag_name }}
+          echo major = ${{ steps.semanticRelease.outputs.major }}
+          echo minor = ${{ steps.semanticRelease.outputs.minor }}
+          echo patch = ${{ steps.semanticRelease.outputs.patch }}
 
 #      - name: Create Semantic release
 #        id: semver
