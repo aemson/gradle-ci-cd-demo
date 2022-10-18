@@ -1,6 +1,5 @@
 name: Run Gradle Build on PRs
 on:
-  pull_request:
   push:
     branches-ignore:
       - main
@@ -14,8 +13,10 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-      - name: Setup Gradle
+      - name: Setup Gradle and clean build
         uses: gradle/gradle-build-action@v2
-
-      - name: Execute Gradle build
-        run: ./gradlew clean build
+        with:
+          gradle-version: 7.5.1
+          arguments: clean build
+          gradle-home-cache-cleanup: true
+      - run: echo 1 ${{ github.ref }}
