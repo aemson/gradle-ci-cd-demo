@@ -14,6 +14,6 @@ class GreetingResourceTest {
             .`when`().get("/hello?name=Aemson")
             .then()
             .statusCode(200)
-            .body(`is`("Hello from Reactive1 Aemson"))
+            .body(`is`("Hello from Reactive Aemson"))
     }
 }
