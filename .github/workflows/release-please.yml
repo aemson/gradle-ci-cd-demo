@@ -11,7 +11,7 @@ jobs:
         id: release
         with:
           release-type: java
-          package-name: release-please-action
+          package-name: ${{env.ACTION_NAME}}g
           command: github-release
       - uses: actions/checkout@v2
       - name: tag major and minor versions
