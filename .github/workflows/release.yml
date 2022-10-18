@@ -23,32 +23,44 @@ jobs:
     name: Create Release
     runs-on: 'ubuntu-latest'
     steps:
-      - name: Create Semantic release
-        id: semver
-        uses: go-semantic-release/action@v1
+      - name: Create semantic release
+        id: semanticRelease
+        uses: google-github-actions/release-please-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: java
+          default-branch: main
       - run: |
-          echo version = v${{ steps.semver.outputs.version }}
+            echo release_created = v${{ steps.semanticRelease.outputs.release_created }}          
+            echo upload_url = v${{ steps.semanticRelease.outputs.upload_url }}          
+            echo tag_name = v${{ steps.semanticRelease.outputs.tag_name }}          
+            echo major = v${{ steps.semanticRelease.outputs.major }}          
+            echo minor = v${{ steps.semanticRelease.outputs.minor }}          
+            echo patch = v${{ steps.semanticRelease.outputs.patch }}          
 
-      - uses: actions/create-release@v1
-        name: Create release
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.semver.outputs.version }}
-          release_name: v${{ steps.semver.outputs.version }}
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./${{ github.repository }}.zip
-          asset_name: ./${{ github.repository }}.zip
-          asset_content_type: application/zip
-
-
+#      - name: Create Semantic release
+#        id: semver
+#        uses: go-semantic-release/action@v1
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#      - run: |
+#          echo version = v${{ steps.semver.outputs.version }}
+#
+#      - uses: actions/create-release@v1
+#        name: Create release
+#        id: create_release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: v${{ steps.semver.outputs.version }}
+#          release_name: v${{ steps.semver.outputs.version }}
+#
+#      - name: Upload Release Asset
+#        id: upload-release-asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+#          asset_path: ./${{ github.repository }}.zip
+#          asset_name: ./${{ github.repository }}.zip
+#          asset_content_type: application/zip
