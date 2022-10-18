@@ -11,8 +11,10 @@ jobs:
         id: release
         with:
           release-type: java
-          package-name: ${{env.ACTION_NAME}}g
+          package-name: ${{env.ACTION_NAME}}
           command: github-release
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
       - uses: actions/checkout@v2
       - name: tag major and minor versions
         if: ${{ steps.release.outputs.release_created }}
