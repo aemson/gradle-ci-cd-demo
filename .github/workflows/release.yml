@@ -6,10 +6,6 @@ jobs:
   build:
     runs-on: 'ubuntu-latest'
     steps:
-      - id: get_version
-        uses: battila7/get-version-action@v2
-      - run: echo ${{ steps.get_version.outputs.version }}
-      - run: echo ${{ steps.get_version.outputs.version-without-v }}
 
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -51,7 +47,7 @@ jobs:
           asset_path: ./gradle-ci-cd-demo.zip
           asset_name: ./gradle-ci-cd-demo.zip
           asset_content_type: application/zip
-          
+
   deploy:
     needs: [ build, release ]
     runs-on: ubuntu-latest
