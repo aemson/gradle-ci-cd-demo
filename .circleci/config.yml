@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@3.1
   serverless-framework: circleci/serverless-framework@2.0
+  semantic-release: proxyco/semantic-release@4.0.0
 
 jobs:
   build:
@@ -13,7 +14,7 @@ jobs:
 
     environment:
       JVM_OPTS: -Xmx3200m
-      TERM: dumb
+
     steps:
       - checkout
 
@@ -23,19 +24,36 @@ jobs:
 
       - run: gradle test
 
-#      - run:
-#          name: Deploy application
-#          command: sls deploy --stage pre
-#  deploy:
-#      executor: serverless-framework/default
-#      steps:
-#        - checkout
-#        - aws-cli/setup
-#        - serverless-framework/setup
-#        - run:
-#            command: serverless deploy -v
-#            name: deploy
-#workflows:
-#  deploy:
-#    jobs:
-#      - deploy
+  release:
+    executor: semantic-release
+    parameters:
+      tag_format:
+        type: string
+        description: Sets the '--tag-format' flag for semantic-release, omit to use the default.
+
+    steps:
+      - when:
+          condition: <<parameters.attach_project>>
+          steps:
+            - attach_workspace:
+                at: "~/gradle-circle-ci-demo"
+            - checkout
+      - release:
+          tag_format: "<< parameters.tag_format >>"
+
+      - run:
+          name: Deploy application
+          command: sls deploy --stage pre
+  deploy:
+      executor: serverless-framework/default
+      steps:
+        - checkout
+        - aws-cli/setup
+        - serverless-framework/setup
+        - run:
+            command: serverless deploy -v
+            name: deploy
+workflows:
+  deploy:
+    jobs:
+      - deploy
