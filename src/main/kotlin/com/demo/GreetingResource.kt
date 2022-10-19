@@ -8,6 +8,7 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
+import javax.ws.rs.core.Response.*
 
 @Path("/hello")
 class GreetingResource {
@@ -21,11 +22,11 @@ class GreetingResource {
     @GET
     @Produces(APPLICATION_JSON)
     fun getData(@QueryParam(value = "name") name: String): Response =
-        Response.ok().entity(users.first { it.name == name }).build()
+        ok().entity(users.first { it.name == name }).build()
 
     @GET
     @Produces(APPLICATION_JSON)
     @Path("/all")
     fun getAllData(): Response =
-        Response.ok().entity(users).build()
+        ok().entity(users).build()
 }
