@@ -37,7 +37,9 @@ jobs:
           command: serverless deploy -v
           name: deploy
 workflows:
-  deploy:
+  build-and-deploy:
     jobs:
-      - build
-      - deploy
+      - build:
+          name: build code
+      - deploy:
+          requires: [build code]
