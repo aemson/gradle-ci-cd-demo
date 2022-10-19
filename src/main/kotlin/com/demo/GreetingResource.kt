@@ -8,9 +8,9 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.*
+import javax.ws.rs.core.Response.ok
 
-@Path("/hello")
+@Path("/")
 class GreetingResource {
 
     val users = listOf(Users("Aemson User", "Oslo", 31), Users("Jonathan User", "Oslo", 2))
