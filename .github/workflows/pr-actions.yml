@@ -1,4 +1,5 @@
 name: Run Gradle Build on PRs
+on: [push, pull_request]
 jobs:
   gradle:
     if: github.ref != 'refs/heads/main' && github.event == push
