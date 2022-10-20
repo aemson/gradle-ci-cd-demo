@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = "com.demo"
-version = scmVersion.version
+version = 1.1
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
