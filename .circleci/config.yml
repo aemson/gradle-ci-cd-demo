@@ -24,9 +24,9 @@ jobs:
 
       - run: gradle test
 
-#      - run:
-#          name: Deploy application
-#          command: sls deploy --stage pre
+  #      - run:
+  #          name: Deploy application
+  #          command: sls deploy --stage pre
 
   deploy:
     docker:
@@ -55,5 +55,9 @@ workflows:
       - build:
           name: build code
       - deploy:
+          filters:
+            branches:
+              only:
+                - main
           type: approval
           requires: [build code]
