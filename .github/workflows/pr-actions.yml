@@ -1,8 +1,10 @@
 name: Run Gradle Build on PRs
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - main
 jobs:
   gradle:
-    if: github.ref != 'refs/heads/main' && github.event == push
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
