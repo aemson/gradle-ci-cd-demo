@@ -1,7 +1,7 @@
 plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.allopen") version "1.7.20"
-    id("io.quarkus")
     id("pl.allegro.tech.build.axion-release") version "1.14.0"
 }
 
@@ -10,20 +10,11 @@ repositories {
     mavenLocal()
 }
 
-val quarkusPlatformGroupId: String by project
-val quarkusPlatformArtifactId: String by project
-val quarkusPlatformVersion: String by project
-
 dependencies {
-    implementation(enforcedPlatform("$quarkusPlatformGroupId:$quarkusPlatformArtifactId:$quarkusPlatformVersion"))
-    implementation("io.quarkus:quarkus-resteasy-reactive-jackson:2.10.4.Final")
-    implementation("io.quarkus:quarkus-resteasy-reactive")
-    implementation("io.quarkus:quarkus-kotlin:2.11.1.Final")
-    implementation("io.quarkus:quarkus-amazon-lambda-http:$quarkusPlatformVersion")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.google.code.gson:gson:2.8.+")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.quarkus:quarkus-arc:2.11.0.Final")
-    testImplementation("io.quarkus:quarkus-junit5")
-    testImplementation("io.rest-assured:rest-assured")
+    implementation("io.arrow-kt:arrow-core:1.1.2")
 }
 
 group = "com.demo"
@@ -37,17 +28,20 @@ java {
 allOpen {
     annotation("javax.ws.rs.Path")
     annotation("javax.enterprise.context.ApplicationScoped")
-    annotation("io.quarkus.test.junit.QuarkusTest")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
     kotlinOptions.javaParameters = true
 }
+ext {
+    set("mainClassName", "Main")
+}
 
-tasks.quarkusBuild {
-    nativeArgs {
-        "container-build" to true
-        "container-runtime" to "docker"
+tasks {
+    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+        manifest {
+            attributes(mapOf("Main-Class" to "mainClassName"))
+        }
     }
 }
