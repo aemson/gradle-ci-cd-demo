@@ -24,9 +24,9 @@ jobs:
 
       - run: gradle test
 
-      - run:
-          name: Deploy application
-          command: sls deploy --stage pre
+#      - run:
+#          name: Deploy application
+#          command: sls deploy --stage pre
 
   deploy:
     docker:
