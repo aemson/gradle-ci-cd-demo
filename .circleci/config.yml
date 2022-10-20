@@ -31,8 +31,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key:
-      - run: v1-dependencies-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          key: v1-dependencies-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
       - run:
           name: Install GraalVM
