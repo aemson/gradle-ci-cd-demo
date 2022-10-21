@@ -1,69 +1,29 @@
-version: 2.1
-
-orbs:
-  aws-cli: circleci/aws-cli@3.1
-  serverless-framework: circleci/serverless-framework@2.0
-  aws-s3: circleci/aws-s3@3.0
-
+version: 2
 jobs:
   build:
-    machine:
-      image: ubuntu-2004:202008-01
-
-    working_directory: ~/gradle-ci-cd-demo
     environment:
-      MAVEN_OPTS: -Xmx6400m
-      # Set the GRAALVM_HOME env variable to the location where we will be installing GraalVM
-      GRAALVM_HOME: /home/circleci/repo/.graalvm
-      JVM_OPTS: -Xmx3200m
-
-    steps:
-      - checkout
-      - run:
-          name: Install GraalVM
-          command: curl https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-linux-amd64-19.1.1.tar.gz -O -J -L && tar xfz graalvm-ce-linux-amd64-19.1.1.tar.gz && mv graalvm-ce-19.1.1 .graalvm && rm graalvm-ce-linux-amd64-19.1.1.tar.gz
-
-
-      - run:
-          name: clean build
-          command: gradle clean build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
-
-      - run: gradle test
-
-  #      - run:
-  #          name: Deploy application
-  #          command: sls deploy --stage pre
-
-  deploy:
+      # Configure the JVM and Gradle to avoid OOM errors
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
-      - image: 'cimg/python:3.6'
+      - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
-      - aws-s3/copy:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          from: ./build/libs/**
-          to: 'https://ci-cd-demo.s3.eu-west-1.amazonaws.com/builds/'
 
-#  deploy:
-#    executor: serverless-framework/default
-#    steps:
-#      - checkout
-#      - aws-cli/setup
-#      - serverless-framework/setup
-#      - run:
-#          command: serverless deploy -v
-#          name: deploy
+      - run:
+          name: Install dependencies
+          command: ./gradlew clean build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+      - store_artifacts:
+          path: build/libs
+
 workflows:
-  build-and-deploy:
+  version: 2
+  workflow:
     jobs:
-      - build:
-          name: build code
-      - deploy:
-          filters:
-            branches:
-              only:
-                - main
-          type: approval
-          requires: [build code]
+      - build
