@@ -2,7 +2,7 @@ name: Run Gradle Build on PRs
 on:
   push:
     branches-ignore:
-      - main
+      - [main, test4]
 jobs:
   gradle:
     runs-on: 'ubuntu-latest'
