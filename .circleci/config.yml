@@ -3,7 +3,6 @@ jobs:
   build:
     docker:
       - image: cimg/base:current
-    resource_class: xlarge
 
     environment:
       # Configure the JVM and Gradle to avoid OOM errors
