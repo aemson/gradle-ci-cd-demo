@@ -1,38 +1,46 @@
+#
+# Native Quarkus CircleCI configuration file
+#
 version: 2
 jobs:
   build:
-    docker:
-      - image: cimg/openjdk:18.0.2-node
-
+    # Use "machine" instead of e.g. "docker" for better/faster results
+    machine: true
+    # Uses a "medium" sized machine - maybe increase this to "large" if you pay for CircleCI
+    resource_class: medium
+    working_directory: ~/gradle-ci-cd-demo
     environment:
-      # Configure the JVM and Gradle to avoid OOM errors
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      MAVEN_OPTS: -Xmx6400m
+      # Set the GRAALVM_HOME env variable to the location where we will be installing GraalVM
+      GRAALVM_HOME: /home/circleci/repo/.graalvm
     steps:
+      # Checkout the source code
+      # ########################
       - checkout
-      - run: java --version
+
       - run:
-          name: Build the GraalVM Compiler and embed it into the JDK (JDK8 with JVMCI enabled)
-          command: |
-            echo ">>>> Using JDK8_JVMCI_HOME as JAVA_HOME (${JAVA_HOME})"
-            ./build/x86_64/linux_macos/lib/buildGraalCompiler.sh ${BASEDIR} ${MX} ${BUILD_ARTIFACTS_DIR}
-          timeout: 10m
-          no_output_timeout: 7m
-          
+          name: Build (Standard)
+          command: ./gradlew clean build
       - run:
-          name: Install dependencies
+          name: Verify (Standard)
+          command: ./gradlew verify
+
+      # Install GraalVM and native-image, needed for a native Quarkus build
+      # ########################
+      - run:
+          name: Install GraalVM
+          command: curl https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-linux-amd64-19.1.1.tar.gz -O -J -L && tar xfz graalvm-ce-linux-amd64-19.1.1.tar.gz && mv graalvm-ce-19.1.1 .graalvm && rm graalvm-ce-linux-amd64-19.1.1.tar.gz
+      - run:
+          name: Install native-image
+          command: $GRAALVM_HOME/bin/gu install native-image
+
+      # Perform a native Quarkus build and verify
+      # ########################
+      - run:
+          name: Build (Native)
           command: ./gradlew clean build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build
-
-      - store_artifacts:
-          path: build/libs
-
-workflows:
-  version: 2
-  workflow:
-    jobs:
-      - build
+          no_output_timeout: 30m
+      - run:
+          name: Verify (Native)
+          command: ./gradlew verify
+          no_output_timeout: 30m
