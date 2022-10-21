@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.allopen") version "1.7.20"
     id("io.quarkus")
     id("pl.allegro.tech.build.axion-release") version "1.14.0"
+    id("jacoco")
 }
 
 repositories {
@@ -49,5 +50,22 @@ tasks.quarkusBuild {
     nativeArgs {
         "container-build" to true
         "container-runtime" to "docker"
+    }
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = BigDecimal.valueOf(.8)
+            }
+        }
     }
 }
