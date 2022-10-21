@@ -21,9 +21,6 @@ jobs:
       - run:
           name: Build (Standard)
           command: ./gradlew clean build
-      - run:
-          name: Verify (Standard)
-          command: ./gradlew verify
 
       # Install GraalVM and native-image, needed for a native Quarkus build
       # ########################
