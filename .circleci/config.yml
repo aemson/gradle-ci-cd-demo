@@ -3,7 +3,8 @@ jobs:
   build:
     docker:
       - image: cimg/base:current
-
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    
     environment:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
