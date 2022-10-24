@@ -11,8 +11,6 @@ jobs:
     working_directory: ~/gradle-ci-cd-demo
     environment:
       MAVEN_OPTS: -Xmx6400m
-      # Set the GRAALVM_HOME env variable to the location where we will be installing GraalVM
-      GRAALVM_HOME: /home/circleci/repo/.graalvm
     steps:
       # Checkout the source code
       # ########################
@@ -22,20 +20,10 @@ jobs:
           name: Build (Standard)
           command: ./gradlew clean build
 
-      # Install GraalVM and native-image, needed for a native Quarkus build
-      # ########################
-      - run:
-          name: Install GraalVM
-          command: curl https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-linux-amd64-19.1.1.tar.gz -O -J -L && tar xfz graalvm-ce-linux-amd64-19.1.1.tar.gz && mv graalvm-ce-19.1.1 .graalvm && rm graalvm-ce-linux-amd64-19.1.1.tar.gz
-      - run:
-          name: Install native-image
-          command: $GRAALVM_HOME/bin/gu install native-image
 
-      # Perform a native Quarkus build and verify
-      # ########################
       - run:
           name: Build (Native)
-          command: ./gradlew clean build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
+          command: ./gradlew clean build -Dquarkus.package.type=native
           no_output_timeout: 30m
       - run:
           name: Verify (Native)
