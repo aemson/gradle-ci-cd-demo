@@ -25,7 +25,3 @@ jobs:
           name: Build (Native)
           command: ./gradlew clean build -Dquarkus.package.type=native
           no_output_timeout: 30m
-      - run:
-          name: Verify (Native)
-          command: ./gradlew verify
-          no_output_timeout: 30m
