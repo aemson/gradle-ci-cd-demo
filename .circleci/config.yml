@@ -1,63 +1,27 @@
-version: 2.1
-
-orbs:
-  aws-cli: circleci/aws-cli@3.1
-  serverless-framework: circleci/serverless-framework@2.0
-  aws-s3: circleci/aws-s3@3.0
-
+#
+# Native Quarkus CircleCI configuration file
+#
+version: 2
 jobs:
   build:
-    docker:
-      - image: cimg/openjdk:18.0.2
-
+    # Use "machine" instead of e.g. "docker" for better/faster results
+    machine: true
+    # Uses a "medium" sized machine - maybe increase this to "large" if you pay for CircleCI
+    resource_class: medium
     working_directory: ~/gradle-ci-cd-demo
-
     environment:
-      JVM_OPTS: -Xmx3200m
-
+      MAVEN_OPTS: -Xmx6400m
     steps:
+      # Checkout the source code
+      # ########################
       - checkout
 
       - run:
-          name: clean build
-          command: gradle clean build
+          name: Build (Standard)
+          command: ./gradlew clean build
 
-      - run: gradle test
 
-  #      - run:
-  #          name: Deploy application
-  #          command: sls deploy --stage pre
-
-  deploy:
-    docker:
-      - image: 'cimg/python:3.6'
-    steps:
-      - checkout
-      - aws-s3/copy:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          from: ./build/libs/**
-          to: 'https://ci-cd-demo.s3.eu-west-1.amazonaws.com/builds/'
-
-#  deploy:
-#    executor: serverless-framework/default
-#    steps:
-#      - checkout
-#      - aws-cli/setup
-#      - serverless-framework/setup
-#      - run:
-#          command: serverless deploy -v
-#          name: deploy
-workflows:
-  build-and-deploy:
-    jobs:
-      - build:
-          name: build code
-      - deploy:
-          filters:
-            branches:
-              only:
-                - main
-          type: approval
-          requires: [build code]
+      - run:
+          name: Build (Native)
+          command: ./gradlew clean build -Dquarkus.package.type=native
+          no_output_timeout: 30m
