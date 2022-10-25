@@ -33,7 +33,7 @@ jobs:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
-          format: "v${major}.${minor}.${patch}-prerelease${increment}"
+          format: "v${major}.${minor}.${patch}"
 
       - name: Create Release
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
