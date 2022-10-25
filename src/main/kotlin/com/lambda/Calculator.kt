@@ -36,7 +36,7 @@ class Calculator : RequestStreamHandler {
     }
 }
 
-fun doCalculations(calculatorInputs: CalculatorInputs) = calculate(calculatorInputs.num1, calculatorInputs.num2, add)
+fun doCalculations(calculatorInputs: CalculatorInputs) = calculate(calculatorInputs.num1, calculatorInputs.num2, sub)
     /*when (calculatorInputs.operation) {
         "plus" -> calculate(calculatorInputs.num1, calculatorInputs.num2, add)
         "minus" -> calculate(calculatorInputs.num1, calculatorInputs.num2, sub)
