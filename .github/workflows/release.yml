@@ -25,42 +25,73 @@ jobs:
     needs: [ gradle ]
     runs-on: 'ubuntu-latest'
     steps:
-      - name: Github Tag with semantic versioning
-        id: githubTag
-        uses: hennejg/github-tag-action@v4.3.1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Setup Gradle and clean build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean build
+          gradle-home-cache-cleanup: true
+
+      - name: Semantic versioning
+        id: versioning
+        uses: PaulHatch/semantic-version@v4.0.2
+        with:
+          branch: main
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          format: "v${major}.${minor}.${patch}-prerelease${increment}"
 
       - name: Create Release
-        id: create_release
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          tag_name: v${{ github.run_number }}.0.0
-          release_name: v${{ github.run_number }}.0.0
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: ${{ steps.versioning.outputs.version }}
+          prerelease: true
+#      - name: Github Tag with semantic versioning
+#        id: githubTag
+#        uses: hennejg/github-tag-action@v4.3.1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
-      - name: Publish using Axion
-        run: |
-          # Fetch a full copy of the repo, as required by release plugin:
-          git fetch --tags --unshallow
-          # Run release:
-          ./gradlew release
-          echo ${{ steps.githubTag.outputs.new_version }}
-          echo ${{ steps.githubTag.outputs.new_tag }}
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: v${{ github.run_number }}.0.0
+#          release_name: v${{ github.run_number }}.0.0
 
-
-  deploy:
-    needs: [ gradle, release ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'eu-west-1'
+#      - uses: actions/checkout@v3
+#      - name: Publish using Axion
+#        run: |
+#          # Fetch a full copy of the repo, as required by release plugin:
+#          git fetch --tags --unshallow
+#          # Run release:
+#          ./gradlew release
+#          echo ${{ steps.githubTag.outputs.new_version }}
+#          echo ${{ steps.githubTag.outputs.new_tag }}
+#
+#
+#  deploy:
+#    needs: [ gradle, release ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#      - uses: jakejarvis/s3-sync-action@master
+#        with:
+#          args: --acl public-read --follow-symlinks --delete
+#        env:
+#          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          AWS_REGION: 'eu-west-1'
