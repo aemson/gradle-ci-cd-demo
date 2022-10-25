@@ -2,7 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.allopen") version "1.7.20"
-    id("com.github.jmongard.git-semver-plugin") version "0.4.3"
+    id 'pl.allegro.tech.build.axion-release' version '1.14.0'
 }
 
 repositories {
@@ -18,7 +18,7 @@ dependencies {
 }
 
 group = "com.demo"
-version = semver.version
+project.version = scmVersion.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
