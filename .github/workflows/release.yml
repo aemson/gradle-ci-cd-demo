@@ -14,7 +14,7 @@ jobs:
           gradle-version: 7.5.1
           gradle-home-cache-cleanup: true
       - name: Run build with Gradle wrapper
-        run:  clean build -Dquarkus.package.type=native
+        run: ./gradlew clean build -Dquarkus.package.type=native
       - name: Upload build zip
         uses: actions/upload-artifact@v3
         with:
