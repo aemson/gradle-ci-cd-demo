@@ -43,7 +43,6 @@ jobs:
         with:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: ${{ steps.versioning.outputs.version }}
-          prerelease: true
 #      - name: Github Tag with semantic versioning
 #        id: githubTag
 #        uses: hennejg/github-tag-action@v4.3.1
