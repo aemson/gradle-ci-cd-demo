@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.google.code.gson:gson:2.8.+")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.arrow-kt:arrow-core:1.1.3")
