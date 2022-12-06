@@ -45,3 +45,5 @@ tasks {
         }
     }
 }
+
+println("My project version - ${project.version}")
