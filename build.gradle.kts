@@ -45,5 +45,7 @@ tasks {
         }
     }
 }
-
+exec {
+    commandLine("git", "pull", "origin", "main:main")
+}
 println("My project version - ${project.version}")
