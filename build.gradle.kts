@@ -18,7 +18,7 @@ dependencies {
 }
 
 group = "com.demo"
-project.version = scmVersion.version
+project.version = scmVersion.version.replace("-SNAPSHOT", "")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
