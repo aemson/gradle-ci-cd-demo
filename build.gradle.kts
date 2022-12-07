@@ -16,7 +16,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.arrow-kt:arrow-core:1.1.3")
 }
-
+exec {
+    commandLine("git", "pull", "origin", "main:main")
+}
 group = "com.demo"
 project.version = scmVersion.version.replace("-SNAPSHOT", "")
 
@@ -45,7 +47,5 @@ tasks {
         }
     }
 }
-exec {
-    commandLine("git", "pull", "origin", "main:main")
-}
+
 println("My project version - ${project.version}")
