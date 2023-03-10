@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.allopen") version "1.7.20"
     id("jacoco")
-    id("pl.allegro.tech.build.axion-release") version "1.14.0"
+    id("pl.allegro.tech.build.axion-release") version "1.14.4"
 }
 
 repositories {
