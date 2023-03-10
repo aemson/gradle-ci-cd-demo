@@ -15,7 +15,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.google.code.gson:gson:2.8.+")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.arrow-kt:arrow-core:1.1.3")
+    implementation("io.arrow-kt:arrow-core:1.1.5")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
