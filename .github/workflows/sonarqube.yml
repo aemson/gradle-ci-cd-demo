@@ -53,6 +53,7 @@ jobs:
           arguments: clean build jacocoTestReport jacocoTestCoverageVerification
           gradle-home-cache-cleanup: true
   Analysis:
+    needs: [gradle]
     runs-on: ubuntu-latest
     steps:
       - name: Analyze with SonarQube
