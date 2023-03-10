@@ -37,9 +37,23 @@ permissions:
   pull-requests: read # allows SonarQube to decorate PRs with analysis results
 
 jobs:
+  gradle:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Setup Gradle and clean build
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.5.1
+          arguments: clean build jacocoTestReport jacocoTestCoverageVerification
+          gradle-home-cache-cleanup: true
   Analysis:
     runs-on: ubuntu-latest
-
     steps:
       - name: Analyze with SonarQube
 
@@ -56,6 +70,7 @@ jobs:
             # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
             # mandatory
             -Dsonar.projectKey=dpp-connector-lora
+            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched

@@ -2,7 +2,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.allopen") version "1.7.20"
-    id ("pl.allegro.tech.build.axion-release")version "1.14.0"
+    id("jacoco")
+    id("pl.allegro.tech.build.axion-release") version "1.14.0"
 }
 
 repositories {
@@ -15,6 +16,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.+")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.arrow-kt:arrow-core:1.1.3")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 }
 exec {
     commandLine("git", "pull", "origin", "main:main")
@@ -44,6 +48,23 @@ tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         manifest {
             attributes(mapOf("Main-Class" to "mainClassName"))
+        }
+    }
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = BigDecimal.valueOf(.1)
+            }
         }
     }
 }

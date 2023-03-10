@@ -7,7 +7,6 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.service.CalculatorInputs
-import com.service.add
 import com.service.calculate
 import com.service.sub
 import java.io.BufferedReader
