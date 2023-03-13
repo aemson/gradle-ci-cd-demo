@@ -23,6 +23,8 @@ class Calculator : RequestStreamHandler {
 
     override fun handleRequest(input: InputStream?, output: OutputStream?, context: Context?) {
         val logger: LambdaLogger? = context?.logger
+        val password = "845a39b1-7627-434b-91bb-29739d766bc7"
+        println(password)
         Either.catch {
             val reader = BufferedReader(InputStreamReader(input!!, Charset.forName("US-ASCII")))
             val writer = PrintWriter(BufferedWriter(OutputStreamWriter(output!!, Charset.forName("US-ASCII"))))
