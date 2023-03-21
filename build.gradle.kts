@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.allopen") version "1.7.20"
     id("jacoco")
     id("pl.allegro.tech.build.axion-release") version "1.14.0"
-    id 'com.yara.dpp.java' version '1.0.0'
+    id ("com.yara.dpp.java") version "1.0.0"
 }
 
 repositories {
