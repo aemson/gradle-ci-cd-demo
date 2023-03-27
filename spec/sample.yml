@@ -6,7 +6,7 @@ paths:
   /:
     get:
       operationId: listVersionsv2.1
-      summary: List API versions.23
+      summary: List API versions.23.2
       responses:
         '200':
           description: |-
