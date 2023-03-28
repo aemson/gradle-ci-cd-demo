@@ -54,27 +54,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-<<<<<<< Updated upstream
             tag_name: ${{ steps.changelog.outputs.tag }
             release_name: ${{ steps.changelog.outputs.tag }
             body: ${{ steps.changelog.outputs.clean_changelog }
             prerelease: false
 #          tag_name: ${{ steps.versioning.outputs.version }}
 #          release_name: ${{ steps.versioning.outputs.version }}
-=======
-<<<<<<< Updated upstream
-          tag_name: ${{ steps.versioning.outputs.version }}
-          release_name: ${{ steps.versioning.outputs.version }}
-          prerelease: false
-=======
-            tag_name: ${{ steps.changelog.outputs.tag }}
-            release_name: ${{ steps.changelog.outputs.tag }}
-            body: ${{ steps.changelog.outputs.clean_changelog }}
-            prerelease: false
-#          tag_name: ${{ steps.versioning.outputs.version }}
-#          release_name: ${{ steps.versioning.outputs.version }}
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
 #name: Release version
 #on:
