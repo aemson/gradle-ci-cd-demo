@@ -4,7 +4,6 @@ plugins {
     kotlin("plugin.allopen") version "1.7.20"
     id("jacoco")
     id("pl.allegro.tech.build.axion-release") version "1.14.0"
-    id ("com.yara.dpp.java") version "1.0.0"
 }
 
 repositories {
@@ -13,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.google.code.gson:gson:2.8.+")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
