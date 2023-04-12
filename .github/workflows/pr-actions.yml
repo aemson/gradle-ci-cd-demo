@@ -1,33 +1,33 @@
-name: Run Gradle Build on PRs
-on:
-  push:
-    branches-ignore:
-      - main
-env:
-  REPO_NAME: ${{ github.event.repository.name }}
-jobs:
-  gradle:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
-
-      - name: Setup Gradle and clean build
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 7.5.1
-          arguments: clean build #-Dquarkus.package.type=native
-          gradle-home-cache-cleanup: true
-
-  job1:
-    name: Printing
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Print
-        run: |
-          echo ${{github.ref}}
-          echo ${{github.REPO_NAME}}
+#name: Run Gradle Build on PRs
+#on:
+#  push:
+#    branches-ignore:
+#      - main
+#env:
+#  REPO_NAME: ${{ github.event.repository.name }}
+#jobs:
+#  gradle:
+#    runs-on: 'ubuntu-latest'
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: 11
+#
+#      - name: Setup Gradle and clean build
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          gradle-version: 7.5.1
+#          arguments: clean build #-Dquarkus.package.type=native
+#          gradle-home-cache-cleanup: true
+#
+#  job1:
+#    name: Printing
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Print
+#        run: |
+#          echo ${{github.ref}}
+#          echo ${{github.REPO_NAME}}
