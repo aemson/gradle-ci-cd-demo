@@ -1,88 +1,36 @@
-name: CI
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  clean-build:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
-
-#      - name: Setup Gradle and clean build
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: 7.5.1
-#          arguments: clean build #-Dquarkus.package.type=native
-#          gradle-home-cache-cleanup: true
-  release:
-    needs: [clean-build]
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          # Fetch all commits
-          fetch-depth: 0
-
-      - name: Semantic versioning
-        id: versioning
-        uses: PaulHatch/semantic-version@v4.0.2
-        with:
-          branch: main
-          tag_prefix: "v"
-          major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
-          format: "v${major}.${minor}.${patch}"
-
-      - name: Create Release
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-            prerelease: false
-            tag_name: ${{ steps.versioning.outputs.version }}
-            release_name: ${{ steps.versioning.outputs.version }}
-            body: |
-              Changes in this Release
-              ${{ github.event.head_commit.message }}
-
-#name: Release version
+#name: CI
 #on:
 #  push:
-#    branches: [ 'main' ]
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout project sources
-#        uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0
-#      - name: Setup Gradle
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: 7.5.1
-#          gradle-home-cache-cleanup: true
-#      - name: Run build with Gradle wrapper
-#        run: ./gradlew clean build -Dquarkus.package.type=native
-#      - name: Upload build zip
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: build-reports
-#          path: build/function.zip
+#    branches:
+#      - main
 #
-#  release:
-#    needs: [ build ]
+#jobs:
+#  clean-build:
 #    runs-on: 'ubuntu-latest'
 #    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: 11
+#
+##      - name: Setup Gradle and clean build
+##        uses: gradle/gradle-build-action@v2
+##        with:
+##          gradle-version: 7.5.1
+##          arguments: clean build #-Dquarkus.package.type=native
+##          gradle-home-cache-cleanup: true
+#  release:
+#    needs: [clean-build]
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 15
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          # Fetch all commits
+#          fetch-depth: 0
+#
 #      - name: Semantic versioning
 #        id: versioning
 #        uses: PaulHatch/semantic-version@v4.0.2
@@ -91,7 +39,6 @@ jobs:
 #          tag_prefix: "v"
 #          major_pattern: "BREAKING CHANGE:"
 #          minor_pattern: "feat:"
-#          search_commit_body: true
 #          format: "v${major}.${minor}.${patch}"
 #
 #      - name: Create Release
@@ -100,33 +47,62 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.github_token }}
 #        with:
-#          tag_name: ${{ steps.versioning.outputs.version }}
-#          release_name: ${{ steps.versioning.outputs.version }}
+#            prerelease: false
+#            tag_name: ${{ steps.versioning.outputs.version }}
+#            release_name: ${{ steps.versioning.outputs.version }}
+#            body: |
+#              Changes in this Release
+#              ${{ github.event.head_commit.message }}
 #
-#      - uses: actions/checkout@v3
-#      - name: Publish using Axion
-#        run: |
-#          # Fetch a full copy of the repo, as required by release plugin:
-#          git fetch --tags --unshallow
-#          # Run release:
-#          ./gradlew release
-#          echo ${{ steps.versioning.outputs.version }}
-#
-##      - name: Github Tag with semantic versioning
-##        id: githubTag
-##        uses: hennejg/github-tag-action@v4.3.1
+##name: Release version
+##on:
+##  push:
+##    branches: [ 'main' ]
+##jobs:
+##  build:
+##    runs-on: ubuntu-latest
+##    steps:
+##      - name: Checkout project sources
+##        uses: actions/checkout@v2
 ##        with:
-##          github_token: ${{ secrets.GITHUB_TOKEN }}
-#
+##          fetch-depth: 0
+##      - name: Setup Gradle
+##        uses: gradle/gradle-build-action@v2
+##        with:
+##          gradle-version: 7.5.1
+##          gradle-home-cache-cleanup: true
+##      - name: Run build with Gradle wrapper
+##        run: ./gradlew clean build -Dquarkus.package.type=native
+##      - name: Upload build zip
+##        uses: actions/upload-artifact@v3
+##        with:
+##          name: build-reports
+##          path: build/function.zip
+##
+##  release:
+##    needs: [ build ]
+##    runs-on: 'ubuntu-latest'
+##    steps:
+##      - name: Semantic versioning
+##        id: versioning
+##        uses: PaulHatch/semantic-version@v4.0.2
+##        with:
+##          branch: main
+##          tag_prefix: "v"
+##          major_pattern: "BREAKING CHANGE:"
+##          minor_pattern: "feat:"
+##          search_commit_body: true
+##          format: "v${major}.${minor}.${patch}"
+##
 ##      - name: Create Release
-##        id: create_release
+##        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
 ##        uses: actions/create-release@v1
 ##        env:
-##          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+##          GITHUB_TOKEN: ${{ secrets.github_token }}
 ##        with:
-##          tag_name: v${{ github.run_number }}.0.0
-##          release_name: v${{ github.run_number }}.0.0
-#
+##          tag_name: ${{ steps.versioning.outputs.version }}
+##          release_name: ${{ steps.versioning.outputs.version }}
+##
 ##      - uses: actions/checkout@v3
 ##      - name: Publish using Axion
 ##        run: |
@@ -134,20 +110,44 @@ jobs:
 ##          git fetch --tags --unshallow
 ##          # Run release:
 ##          ./gradlew release
-##          echo ${{ steps.githubTag.outputs.new_version }}
-##          echo ${{ steps.githubTag.outputs.new_tag }}
+##          echo ${{ steps.versioning.outputs.version }}
 ##
+###      - name: Github Tag with semantic versioning
+###        id: githubTag
+###        uses: hennejg/github-tag-action@v4.3.1
+###        with:
+###          github_token: ${{ secrets.GITHUB_TOKEN }}
 ##
-##  deploy:
-##    needs: [ gradle, release ]
-##    runs-on: ubuntu-latest
-##    steps:
-##      - uses: actions/checkout@master
-##      - uses: jakejarvis/s3-sync-action@master
-##        with:
-##          args: --acl public-read --follow-symlinks --delete
-##        env:
-##          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-##          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-##          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-##          AWS_REGION: 'eu-west-1'
+###      - name: Create Release
+###        id: create_release
+###        uses: actions/create-release@v1
+###        env:
+###          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+###        with:
+###          tag_name: v${{ github.run_number }}.0.0
+###          release_name: v${{ github.run_number }}.0.0
+##
+###      - uses: actions/checkout@v3
+###      - name: Publish using Axion
+###        run: |
+###          # Fetch a full copy of the repo, as required by release plugin:
+###          git fetch --tags --unshallow
+###          # Run release:
+###          ./gradlew release
+###          echo ${{ steps.githubTag.outputs.new_version }}
+###          echo ${{ steps.githubTag.outputs.new_tag }}
+###
+###
+###  deploy:
+###    needs: [ gradle, release ]
+###    runs-on: ubuntu-latest
+###    steps:
+###      - uses: actions/checkout@master
+###      - uses: jakejarvis/s3-sync-action@master
+###        with:
+###          args: --acl public-read --follow-symlinks --delete
+###        env:
+###          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+###          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+###          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+###          AWS_REGION: 'eu-west-1'
