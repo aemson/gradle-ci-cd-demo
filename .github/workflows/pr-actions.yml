@@ -1,8 +1,7 @@
 name: Run PRs soon
 on:
-  label:
-    types:
-      - created
+  pull_request:
+    types: [ labeled ]
   workflow_dispatch:
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
