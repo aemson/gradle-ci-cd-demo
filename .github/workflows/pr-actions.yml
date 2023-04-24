@@ -40,13 +40,3 @@ jobs:
           git add .
           git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
           git push
-
-  merge-me:
-    name: Merge me!
-    runs-on: ubuntu-latest
-    steps:
-      - name: Merge
-        uses: KeisukeYamashita/auto-pull-request-merge@v1
-        with:
-          intervalSeconds: 10
-          timeoutSeconds: 30
