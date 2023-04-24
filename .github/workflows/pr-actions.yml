@@ -29,6 +29,15 @@ jobs:
         run: |
           echo ${{ steps.versioning.outputs.version }}
           echo ${{env.BRANCH_NAME}}
+      - name: Update version file
+        run: echo ${{ steps.versioning.outputs.version }} > version
+      - name: Commit version file
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@ugithub.com
+          git add .
+          git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
+          git push
 
   release:
     name: Release
