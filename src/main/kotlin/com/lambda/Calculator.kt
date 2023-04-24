@@ -32,7 +32,7 @@ class Calculator : RequestStreamHandler {
             logger?.log("inputs = $calculatorInputs")
             val result = doCalculations(calculatorInputs)
             writer.write(gson.toJson(result))
-            if (writer.checkError()) logger?.log("encountered an error. !!")
+            if (writer.checkError()) logger?.log("!! encountered an error. !!")
         }.mapLeft { logger?.log(it.message) }
     }
 }
