@@ -15,56 +15,72 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-  release:
-    name: Release
+  release-test:
+    name: test
     runs-on: ubuntu-latest
     if: >-
       github.event.issue.pull_request != '' && 
       (
-        contains(github.event.comment.body, '/release') || 
-        contains(github.event.comment.body, '/merge')
+        contains(github.event.comment.body, '/test') 
       )
     steps:
-      - name: run test
-        run: echo ${{ github.ref }}
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: github.ref
-          # Fetch all commits
-          fetch-depth: 0
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
+      - name: print
+        run: echo ${{ steps.extract_branch.outputs.branch }}
 
-      - name: Semantic versioning
-        id: versioning
-        uses: PaulHatch/semantic-version@v5.0.2
-        with:
-          branch: main
-          tag_prefix: "v"
-          major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
-          version_format: "v${major}.${minor}.${patch}"
+    release:
+      name: Release
+      runs-on: ubuntu-latest
+      if: >-
+        github.event.issue.pull_request != '' && 
+        (
+          contains(github.event.comment.body, '/release') || 
+          contains(github.event.comment.body, '/merge')
+        )
+      steps:
+        - name: run test
+          run: echo ${{ github.ref }}
+        - name: Checkout
+          uses: actions/checkout@v3
+          with:
+            ref: github.ref
+            # Fetch all commits
+            fetch-depth: 0
 
-#      - name: Create Release
-#        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.github_token }}
-#        with:
-#          tag_name: ${{ steps.versioning.outputs.version }}
-#          release_name: ${{ steps.versioning.outputs.version }}
-#          prerelease: false
+        - name: Semantic versioning
+          id: versioning
+          uses: PaulHatch/semantic-version@v5.0.2
+          with:
+            branch: main
+            tag_prefix: "v"
+            major_pattern: "BREAKING CHANGE:"
+            minor_pattern: "feat:"
+            version_format: "v${major}.${minor}.${patch}"
 
-      - name: Update version file
-        run: echo ${{ steps.versioning.outputs.version }} > version
-      - name: Commit version file
-        run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@ugithub.com
-          git add .
-          git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
-          git push
+  #      - name: Create Release
+  #        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+  #        uses: actions/create-release@v1
+  #        env:
+  #          GITHUB_TOKEN: ${{ secrets.github_token }}
+  #        with:
+  #          tag_name: ${{ steps.versioning.outputs.version }}
+  #          release_name: ${{ steps.versioning.outputs.version }}
+  #          prerelease: false
 
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.15.6"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        - name: Update version file
+          run: echo ${{ steps.versioning.outputs.version }} > version
+        - name: Commit version file
+          run: |
+            git config --global user.name github-actions
+            git config --global user.email github-actions@ugithub.com
+            git add .
+            git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
+            git push
+
+        - name: automerge
+          uses: "pascalgn/automerge-action@v0.15.6"
+          env:
+            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
