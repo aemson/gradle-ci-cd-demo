@@ -45,6 +45,6 @@ jobs:
           fetch-depth: 0
           
       - name: automerge
-        uses: "pascalgn/automerge-action@v0.15.6"
+        uses: "maxkomarychev/merge-pal-action@vX.Y.Z"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
