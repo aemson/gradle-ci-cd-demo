@@ -39,7 +39,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: test
           fetch-depth: 1
 
       - name: Semantic versioning
