@@ -15,18 +15,12 @@ jobs:
         contains(github.event.comment.body, '/test') 
       )
     steps:
-      - name: Branch used
-        id: extract_branch
+      - name: Extract branch name
+        shell: bash
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-            echo "::set-output name=branch::$(echo ${GITHUB_REF##*/})"
-          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
-          else
-            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
-          fi
-      - name: print
-        run: echo ${{ steps.extract_branch.outputs.branch }}
+          echo ${{GITHUB_HEAD_REF}}
+          echo ${{GITHUB_REF_NAME}}
+
 
   release:
     name: Release
@@ -40,6 +34,11 @@ jobs:
     steps:
       - name: run test
         run: echo ${{ github.ref }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: test
+          fetch-depth: 1
 
       - name: Semantic versioning
         id: versioning
