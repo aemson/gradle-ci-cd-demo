@@ -1,5 +1,8 @@
 name: Run PRs soon
 on:
+  push:
+    branches-ignore:
+      - main
   pull_request:
     branches:
       - main
@@ -10,6 +13,12 @@ env:
 jobs:
   version:
     runs-on: ubuntu-latest
+    if: >-
+      github.event.issue.pull_request != '' && 
+      (
+        contains(github.event.comment.body, '/release') || 
+        contains(github.event.comment.body, '/merge')
+      )
     steps:
       - name: print
         run: |
@@ -41,20 +50,6 @@ jobs:
           git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
           git push
 
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    if: >-
-      github.event.issue.pull_request != '' && 
-      (
-        contains(github.event.comment.body, '/release') || 
-        contains(github.event.comment.body, '/merge')
-      )
-    steps:
-      - name: print
-        run: |
-          echo ${{env.BRANCH_NAME}}
-          echo ${{github.event.pull_request.head.repo.default_branch}}
 #      - name: automerge
 #        uses: "pascalgn/automerge-action@v0.15.6"
 #        env:
