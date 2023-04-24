@@ -25,6 +25,8 @@ jobs:
         contains(github.event.comment.body, '/merge')
       )
     steps:
+      - name: run test
+        run: echo ${{ github.ref }}
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -36,7 +38,7 @@ jobs:
         id: versioning
         uses: PaulHatch/semantic-version@v5.0.2
         with:
-          branch: github.ref
+          branch: main
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
