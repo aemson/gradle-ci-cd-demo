@@ -54,7 +54,7 @@ jobs:
       - name: print
         run: |
           echo ${{env.BRANCH_NAME}}
-          echo ${{github}}
+          echo ${{github.event.pull_request.head.repo.default_branch}}
 #      - name: automerge
 #        uses: "pascalgn/automerge-action@v0.15.6"
 #        env:
