@@ -1,6 +1,6 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/aemson/gradle-ci-cd-demo/tree/main.svg?style=svg&circle-token=a13c223d803259715d56354d9d12733e31b4fad2)](https://dl.circleci.com/status-badge/redirect/gh/aemson/gradle-ci-cd-demo/tree/main)
 
-[![Release version](https://github.com/aemson/gradle-ci-cd-demo/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/aemson/gradle-ci-cd-demo/actions/workflows/release.yml)
+[![Release version](https://github.com/aemson/gradle-ci-cd-demo/actions/workflows/pr-actions.yml/badge.svg?branch=main)](https://github.com/aemson/gradle-ci-cd-demo/actions/workflows/pr-actions.yml)
 
 # demo Project
 
