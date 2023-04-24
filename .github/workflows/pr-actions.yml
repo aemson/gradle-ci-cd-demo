@@ -4,21 +4,8 @@ on:
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
-  print:
-    runs-on: ubuntu-latest
-    steps:
-      - name: print
-        run: |
-          echo ${{env.BRANCH_NAME}}
-          echo ${{github.head_ref}}
   version:
     runs-on: ubuntu-latest
-    if: >-
-      github.event.issue.pull_request != '' && 
-      (
-        contains(github.event.comment.body, '/release') || 
-        contains(github.event.comment.body, '/merge')
-      )
     steps:
       - name: print
         run: |
@@ -50,8 +37,3 @@ jobs:
           git add .
           git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
           git push
-
-#      - name: automerge
-#        uses: "pascalgn/automerge-action@v0.15.6"
-#        env:
-#          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
