@@ -42,7 +42,6 @@ jobs:
           git push
 
   merge-me:
-    needs: [version]
     name: Merge me!
     runs-on: ubuntu-latest
     steps:
