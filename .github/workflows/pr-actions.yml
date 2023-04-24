@@ -11,6 +11,9 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
+      - name: print
+        run: |
+          echo ${{env.BRANCH_NAME}}
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -28,7 +31,6 @@ jobs:
       - name: print
         run: |
           echo ${{ steps.versioning.outputs.version }}
-          echo ${{env.BRANCH_NAME}}
       - name: Update version file
         run: echo ${{ steps.versioning.outputs.version }} > version
       - name: Commit version file
@@ -49,42 +51,9 @@ jobs:
         contains(github.event.comment.body, '/merge')
       )
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{env.BRANCH_NAME}}
-          fetch-depth: 0
-
-      - name: Semantic versioning
-        id: versioning
-        uses: PaulHatch/semantic-version@v5.0.2
-        with:
-          branch: ${{env.BRANCH_NAME}}
-          tag_prefix: "v"
-          major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
-          version_format: "v${major}.${minor}.${patch}"
-
-#      - name: Create Release
-#        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.github_token }}
-#        with:
-#          tag_name: ${{ steps.versioning.outputs.version }}
-#          release_name: ${{ steps.versioning.outputs.version }}
-#          prerelease: false
-
-      - name: Update version file
-        run: echo ${{ steps.versioning.outputs.version }} > version
-      - name: Commit version file
+      - name: print
         run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@ugithub.com
-          git add .
-          git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
-          git push
-
+          echo ${{env.BRANCH_NAME}}
 #      - name: automerge
 #        uses: "pascalgn/automerge-action@v0.15.6"
 #        env:
