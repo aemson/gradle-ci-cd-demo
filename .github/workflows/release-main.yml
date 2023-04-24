@@ -6,19 +6,21 @@ on:
 
 jobs:
   create-release:
-    - name: Read version file
-      id: version
-      uses: juliangruber/read-file-action@v1
-      with:
-        path: ./version
-    - name: Echo version
-      run: echo "${{ steps.version.outputs.content }}"
-    - name: Create Release
-      if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
-      with:
-        tag_name: ${{ steps.package.outputs.content }}
-        release_name: ${{ steps.package.outputs.content }}
-        prerelease: false
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Read version file
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./version
+      - name: Echo version
+        run: echo "${{ steps.version.outputs.content }}"
+      - name: Create Release
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.package.outputs.content }}
+          release_name: ${{ steps.package.outputs.content }}
+          prerelease: false
