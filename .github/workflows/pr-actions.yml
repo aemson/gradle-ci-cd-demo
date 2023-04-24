@@ -11,6 +11,13 @@ on:
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print
+        run: |
+          echo ${{env.BRANCH_NAME}}
+          echo ${{github.head_ref}}
   version:
     runs-on: ubuntu-latest
     if: >-
@@ -23,6 +30,7 @@ jobs:
       - name: print
         run: |
           echo ${{env.BRANCH_NAME}}
+          echo ${{github.head_ref}}
       - name: Checkout
         uses: actions/checkout@v3
         with:
