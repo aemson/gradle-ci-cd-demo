@@ -5,6 +5,8 @@ on:
       - main
   issue_comment:
     types: [ created ]
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
   version:
     runs-on: ubuntu-latest
@@ -24,7 +26,9 @@ jobs:
           minor_pattern: "feat:"
           version_format: "v${major}.${minor}.${patch}"
       - name: print
-        run: echo ${{ steps.versioning.outputs.version }}
+        run: |
+          echo ${{ steps.versioning.outputs.version }}
+          echo ${{env.BRANCH_NAME}}
 
   release-test:
     name: test
