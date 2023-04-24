@@ -1,11 +1,13 @@
-name: Run Gradle Build on PRs
+name: Run PRs
 on:
   push:
     branches-ignore:
       - main
-  merge_group:
-env:
-  REPO_NAME: ${{ github.event.repository.name }}
+  pull_request:
+    branches:
+      - main
+  issue_comment:
+    types: [ created ]
 jobs:
   gradle:
     runs-on: 'ubuntu-latest'
@@ -22,3 +24,52 @@ jobs:
           gradle-version: 7.5.1
           arguments: clean build #-Dquarkus.package.type=native
           gradle-home-cache-cleanup: true
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.issue.pull_request != '' && 
+      (
+        contains(github.event.comment.body, '/release') || 
+        contains(github.event.comment.body, '/merge')
+      )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          # Fetch all commits
+          fetch-depth: 0
+
+      - name: Semantic versioning
+        id: versioning
+        uses: PaulHatch/semantic-version@v5.0.2
+        with:
+          branch: main
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          version_format: "v${major}.${minor}.${patch}"
+
+      - name: Create Release
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: ${{ steps.versioning.outputs.version }}
+          prerelease: false
+
+      - name: Update version file
+        run: echo ${{ steps.versioning.outputs.version }} > version
+      - name: Commit version file
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@ugithub.com
+          git add .
+          git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
+          git push
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.15.6"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
