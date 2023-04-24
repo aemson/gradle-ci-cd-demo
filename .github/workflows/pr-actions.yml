@@ -46,7 +46,8 @@ jobs:
     name: Merge me!
     runs-on: ubuntu-latest
     steps:
-      - name: Merge me!
-        uses: ridedott/merge-me-action@v2
+      - name: Merge
+        uses: KeisukeYamashita/auto-pull-request-merge@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          intervalSeconds: 10
+          timeoutSeconds: 30
