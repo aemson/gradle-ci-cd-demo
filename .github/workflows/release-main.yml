@@ -23,6 +23,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          tag_name: ${{ steps.package.outputs.content }}
-          release_name: ${{ steps.package.outputs.content }}
+          tag_name: ${{ steps.version.outputs.content }}
+          release_name: ${{ steps.version.outputs.content }}
           prerelease: false
