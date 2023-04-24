@@ -54,6 +54,7 @@ jobs:
       - name: print
         run: |
           echo ${{env.BRANCH_NAME}}
+          echo ${{github}}
 #      - name: automerge
 #        uses: "pascalgn/automerge-action@v0.15.6"
 #        env:
