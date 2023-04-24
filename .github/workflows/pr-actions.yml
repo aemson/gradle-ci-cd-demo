@@ -6,15 +6,6 @@ on:
   issue_comment:
     types: [ created ]
 jobs:
-  gradle:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
-
   release-test:
     name: test
     runs-on: ubuntu-latest
@@ -43,12 +34,6 @@ jobs:
     steps:
       - name: run test
         run: echo ${{ github.ref }}
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: github.ref
-          # Fetch all commits
-          fetch-depth: 0
 
       - name: Semantic versioning
         id: versioning
