@@ -14,13 +14,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: testing
+          ref: env.BRANCH_NAME
           fetch-depth: 0
       - name: Semantic versioning
         id: versioning
         uses: PaulHatch/semantic-version@v5.0.2
         with:
-          branch: testing
+          branch: env.BRANCH_NAME
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
@@ -29,24 +29,6 @@ jobs:
         run: |
           echo ${{ steps.versioning.outputs.version }}
           echo ${{env.BRANCH_NAME}}
-
-  release-test:
-    name: test
-    runs-on: ubuntu-latest
-    if: >-
-      github.event.issue.pull_request != '' && 
-      (
-        contains(github.event.comment.body, '/test') 
-      )
-    steps:
-      - name: Extract branch name
-        shell: bash
-        run: |
-          echo ${{ github }}
-          echo ${{ github.head_ref }}
-          echo ${{ github.ref }}
-          echo ${{ github.ref_name }}
-
 
   release:
     name: Release
@@ -58,18 +40,17 @@ jobs:
         contains(github.event.comment.body, '/merge')
       )
     steps:
-      - name: run test
-        run: echo ${{ github.ref }}
       - name: Checkout
         uses: actions/checkout@v3
         with:
+          ref: env.BRANCH_NAME
           fetch-depth: 0
 
       - name: Semantic versioning
         id: versioning
         uses: PaulHatch/semantic-version@v5.0.2
         with:
-          branch: main
+          branch: env.BRANCH_NAME
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
@@ -95,7 +76,7 @@ jobs:
           git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
           git push
 
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.15.6"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+#      - name: automerge
+#        uses: "pascalgn/automerge-action@v0.15.6"
+#        env:
+#          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
