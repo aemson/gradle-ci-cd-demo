@@ -40,3 +40,13 @@ jobs:
           git add .
           git commit -m "${{ steps.versioning.outputs.version }} (automatically updated)"
           git push
+
+  merge-me:
+    needs: [version]
+    name: Merge me!
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge me!
+        uses: ridedott/merge-me-action@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
