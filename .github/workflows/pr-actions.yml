@@ -18,8 +18,10 @@ jobs:
       - name: Extract branch name
         shell: bash
         run: |
-          echo ${{ vars.GITHUB_HEAD_REF }}
-          echo ${{ vars.GITHUB_REF_NAME }}
+          echo ${{ github.base_ref }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.ref }}
+          echo ${{ github.ref_name }}
 
 
   release:
