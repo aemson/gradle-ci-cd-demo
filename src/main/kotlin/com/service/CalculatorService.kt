@@ -7,5 +7,5 @@ fun calculate(num1: Int, num2: Int, function: (Int, Int) -> Int): String = "Outp
 val add: (Int, Int) -> Int = { x, y -> x % y }
 val sub: (Int, Int) -> Int = { x, y -> x % y }
 
-fun doSomethingCool(caller: (Int, Int) -> String) = caller(10, 19)
+fun doSomethingCool(caller: (Int, Int) -> String) = caller(12, 19)
 
