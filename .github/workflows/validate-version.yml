@@ -1,44 +1,66 @@
 name: Validate version file
 on:
   push:
-    branches:
-      - !main
-    paths:
-      - './version'
+    branches-ignore:
+      - main
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
-  main-branch-version:
-    runs-on: 'ubuntu-latest'
+  test:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2.1.0
+      - uses: jitterbit/get-changed-files@v1
+        id: abc
         with:
-          ref: main
-      - name: Read main version file
-        id: main-version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./version
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Printing
+        run: |
+          echo "All:"
+          echo "${{ steps.abc.outputs.all }}"
+          echo "Added:"
+          echo "${{ steps.abc.outputs.added }}"
+          echo "Removed:"
+          echo "${{ steps.abc.outputs.removed }}"
+          echo "Renamed:"
+          echo "${{ steps.abc.outputs.renamed }}"
+          echo "Modified:"
+          echo "${{ steps.abc.outputs.modified }}"
+          echo "Added+Modified:"
+          echo "${{ steps.abc.outputs.added_modified }}"
 
-  pr-branch-version:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref:  ${{env.BRANCH_NAME}}
-      - name: Read pr branch version file
-        id: pr-version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./version
-
-  validate-versions:
-    needs: [main-branch-version, pr-branch-version]
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: validate the versions
-        if: ${{ needs.main-branch-version.main-version.output == needs.pr-branch-version.pr-version.output }}
-        run: exit 1
-
+#  main-branch-version:
+#    runs-on: 'ubuntu-latest'
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#        with:
+#          ref: main
+#      - name: Read main version file
+#        id: main-version
+#        uses: juliangruber/read-file-action@v1
+#        with:
+#          path: ./version
+#
+#  pr-branch-version:
+#    runs-on: 'ubuntu-latest'
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#        with:
+#          ref:  ${{env.BRANCH_NAME}}
+#      - name: Read pr branch version file
+#        id: pr-version
+#        uses: juliangruber/read-file-action@v1
+#        with:
+#          path: ./version
+#
+#  validate-versions:
+#    needs: [main-branch-version, pr-branch-version]
+#    runs-on: 'ubuntu-latest'
+#    steps:
+#      - name: validate the versions
+#        if: ${{ needs.main-branch-version.main-version.output == needs.pr-branch-version.pr-version.output }}
+#        run: exit 1
+#
