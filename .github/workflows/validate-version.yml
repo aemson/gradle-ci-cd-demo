@@ -1,15 +1,15 @@
 name: Validate version file
 on:
-  push:
-    branches-ignore:
-      - main
+  pull_request:
+    types: [ labeled ]
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.1.0
+      - name: Checkout
+        uses: actions/checkout@v2.1.0
       - uses: jitterbit/get-changed-files@v1
         id: abc
         with:
@@ -17,18 +17,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Printing
         run: |
-          echo "All:"
-          echo "${{ steps.abc.outputs.all }}"
-          echo "Added:"
-          echo "${{ steps.abc.outputs.added }}"
-          echo "Removed:"
-          echo "${{ steps.abc.outputs.removed }}"
-          echo "Renamed:"
-          echo "${{ steps.abc.outputs.renamed }}"
           echo "Modified:"
           echo "${{ steps.abc.outputs.modified }}"
-          echo "Added+Modified:"
-          echo "${{ steps.abc.outputs.added_modified }}"
 
 #  main-branch-version:
 #    runs-on: 'ubuntu-latest'
