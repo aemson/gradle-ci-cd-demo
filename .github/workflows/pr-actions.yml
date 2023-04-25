@@ -7,7 +7,6 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
   version:
-    if: ${{ github.event.label.name == 'create-version' }}
     runs-on: ubuntu-latest
     steps:
       - name: print
