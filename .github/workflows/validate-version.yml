@@ -1,0 +1,44 @@
+name: Validate version file
+on:
+  push:
+    branches:
+      - !main
+    paths:
+      - './version'
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+jobs:
+  main-branch-version:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Read main version file
+        id: main-version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./version
+
+  pr-branch-version:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref:  ${{env.BRANCH_NAME}}
+      - name: Read pr branch version file
+        id: pr-version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./version
+
+  validate-versions:
+    needs: [main-branch-version, pr-branch-version]
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: validate the versions
+        if: ${{ needs.main-branch-version.main-version.output == needs.pr-branch-version.pr-version.output }}
+        run: exit 1
+

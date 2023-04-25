@@ -10,13 +10,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Read version file
         id: version
         uses: juliangruber/read-file-action@v1
         with:
           path: ./version
-      - name: Echo version
-        run: echo "${{ steps.version.outputs.content }}"
+
       - name: Create Release
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/create-release@v1
