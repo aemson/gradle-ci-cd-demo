@@ -25,7 +25,7 @@ jobs:
           branch: ${{env.BRANCH_NAME}}
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
+          minor_pattern: "minor:"
           version_format: "v${major}.${minor}.${patch}"
       - name: print
         run: |
