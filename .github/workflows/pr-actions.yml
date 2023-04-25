@@ -7,7 +7,6 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 jobs:
   version:
-    if: ${{ github.event.label.name == 'create-version' }}
     runs-on: ubuntu-latest
     steps:
       - name: print
@@ -26,7 +25,7 @@ jobs:
           branch: ${{env.BRANCH_NAME}}
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
+          minor_pattern: "minor:"
           version_format: "v${major}.${minor}.${patch}"
       - name: print
         run: |
