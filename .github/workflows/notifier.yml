@@ -12,6 +12,23 @@ jobs:
       - uses: mshick/add-pr-comment@v2
         with:
           message: |
-            - Add the label `update-version`
-            - This will run the update-version workflow and create a version .
-            NB: 🚨 Merging without these steps will create invalid ECR image tag.
+              - Add the label `update-version`, this will run the update-version workflow and create a version .
+                <img src="https://raw.githubusercontent.com/aemson/gradle-ci-cd-demo/main/.github/workflows/img.png" />
+                ### **NB: 🚨 Merging without these steps will create invalid ECR image tag.**
+
+  rebase:
+    name: Rebase
+    runs-on: ubuntu-latest
+    if: github.event.review.state == 'approved'
+    steps:
+      - name: Checkout the latest code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
+      - name: Automatic Rebase
+        uses: cirrus-actions/rebase@1.7
+        with:
+          autosquash: ${{ contains(github.event.comment.body, '/autosquash') || contains(github.event.comment.body, '/rebase-autosquash') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
