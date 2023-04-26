@@ -12,6 +12,6 @@ jobs:
       - uses: mshick/add-pr-comment@v2
         with:
           message: |
-            **Hello**
-            🌏dont forget to add the label 
-            !
+            - Add the label `update-version`
+            - This will run the update-version workflow and create a version .
+            NB: 🚨 Merging without these steps will create invalid ECR image tag.
