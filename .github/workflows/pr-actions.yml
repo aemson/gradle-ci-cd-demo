@@ -34,7 +34,6 @@ jobs:
         run: echo ${{ steps.versioning.outputs.version }} > version
       - name: Commit version file
         run: |
-          git commit --author="github-version-actions <github-actions@ugithub.com>"
           git config --global user.name github-actions
           git config --global user.email github-actions@ugithub.com
           git add .
