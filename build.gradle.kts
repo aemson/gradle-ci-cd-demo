@@ -19,7 +19,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-core:1.1.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
 }
 exec {
     commandLine("git", "pull", "origin", "main:main")
